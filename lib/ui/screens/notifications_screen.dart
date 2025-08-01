@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:nummo/components/app_drawer.dart';
 import 'package:nummo/components/custom_app_bar.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class NotificationsScreen extends StatefulWidget {
+  const NotificationsScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<NotificationsScreen> createState() => _NotificationsScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _NotificationsScreenState extends State<NotificationsScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   void _handleOpenDrawer() {
@@ -22,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
       key: _scaffoldKey,
       appBar: CustomAppBar(onOpenDrawer: _handleOpenDrawer),
       drawer: const AppDrawer(),
-      body: Center(child: const Text('App Home screen')),
+      body: Center(child: const Text('Notifications screen')),
     );
   }
 }

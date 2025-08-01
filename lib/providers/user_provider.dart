@@ -31,6 +31,7 @@ class UserProvider with ChangeNotifier {
       'id': user.id,
       'name': user.name,
       'email': user.email,
+      'password': user.password,
       'avatarUrl': user.avatarUrl,
     });
 

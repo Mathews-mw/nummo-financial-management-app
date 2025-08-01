@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+
 import 'package:nummo/components/app_drawer.dart';
 import 'package:nummo/components/custom_app_bar.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class MonthlyBudgetScreen extends StatefulWidget {
+  const MonthlyBudgetScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<MonthlyBudgetScreen> createState() => _MonthlyBudgetScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _MonthlyBudgetScreenState extends State<MonthlyBudgetScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   void _handleOpenDrawer() {
@@ -22,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
       key: _scaffoldKey,
       appBar: CustomAppBar(onOpenDrawer: _handleOpenDrawer),
       drawer: const AppDrawer(),
-      body: Center(child: const Text('App Home screen')),
+      body: Center(child: const Text('Monthly budget screen')),
     );
   }
 }

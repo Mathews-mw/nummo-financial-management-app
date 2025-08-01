@@ -39,7 +39,7 @@ class User {
       name: json['name'],
       email: json['email'],
       password: json['password'],
-      avatarUrl: json['avatar_url'],
+      avatarUrl: json['avatarUrl'],
     );
 
     return user;
