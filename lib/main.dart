@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:nummo/app_routes.dart';
 import 'package:nummo/theme/theme.dart';
-import 'package:nummo/ui/screens/home_screen.dart';
+import 'package:nummo/ui/screens/home/home_screen.dart';
 import 'package:nummo/ui/screens/login_screen.dart';
 import 'package:nummo/providers/user_provider.dart';
 import 'package:nummo/ui/screens/signup_screen.dart';
@@ -15,7 +16,11 @@ import 'package:nummo/ui/screens/monthly_budget_screen.dart';
 import 'package:nummo/data/repositories/user_repository.dart';
 import 'package:nummo/ui/screens/bills_management_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await initializeDateFormatting('pt_BR', null);
+
   runApp(MyApp());
 }
 

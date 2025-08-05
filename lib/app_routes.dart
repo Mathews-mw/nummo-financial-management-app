@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import 'package:nummo/ui/screens/home_screen.dart';
+import 'package:nummo/ui/screens/home/home_screen.dart';
 import 'package:nummo/ui/screens/login_screen.dart';
 import 'package:nummo/ui/screens/perfil_screen.dart';
 import 'package:nummo/ui/screens/signup_screen.dart';

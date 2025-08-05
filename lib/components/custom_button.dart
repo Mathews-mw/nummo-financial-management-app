@@ -54,7 +54,7 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return FilledButton.icon(
       style: FilledButton.styleFrom(
-        disabledBackgroundColor: Color.fromRGBO(251, 146, 60, 0.4),
+        disabledBackgroundColor: Color.fromRGBO(218, 75, 220, 0.4),
         disabledForegroundColor: AppColors.gray400,
         backgroundColor: variant != null ? variant!.color : AppColors.primary,
         foregroundColor: AppColors.foreground,

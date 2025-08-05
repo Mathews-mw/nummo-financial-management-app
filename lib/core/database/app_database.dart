@@ -2,6 +2,9 @@ import 'dart:io';
 import 'dart:async';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:nummo/@types/transaction_category.dart';
+import 'package:nummo/@types/transaction_type.dart';
+import 'package:nummo/core/database/daos/transaction_dao.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
@@ -10,7 +13,6 @@ import 'package:nummo/core/database/daos/user_dao.dart';
 
 part 'app_database.g.dart'; // Arquivo gerado automaticamente pelo build_runner
 
-// Definição de uma tabela exemplo
 class UsersTable extends Table {
   IntColumn get id => integer().named("id").autoIncrement()();
   TextColumn get name => text().named("name").withLength(min: 1, max: 50)();
@@ -23,12 +25,28 @@ class UsersTable extends Table {
   TextColumn get avatarUrl => text().named('avatar_url').nullable()();
 }
 
-@DriftDatabase(tables: [UsersTable], daos: [UserDao])
+class TransactionsTable extends Table {
+  IntColumn get id => integer().named("id").autoIncrement()();
+  TextColumn get title => text().named("title").withLength(min: 1, max: 50)();
+  RealColumn get value => real().named("value")();
+  TextColumn get type => textEnum<TransactionType>().named("type")();
+  TextColumn get category => textEnum<TransactionCategory>()
+      .named("category")
+      .clientDefault(() => TransactionCategory.outros.value)();
+  DateTimeColumn get createdAt =>
+      dateTime().withDefault(currentDateAndTime).named('created_at')();
+  DateTimeColumn get updatedAt => dateTime().named('updated_at').nullable()();
+}
+
+@DriftDatabase(
+  tables: [UsersTable, TransactionsTable],
+  daos: [UserDao, TransactionDao],
+)
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 10;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(

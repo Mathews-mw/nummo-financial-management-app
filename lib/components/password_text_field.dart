@@ -79,17 +79,17 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: AppColors.gray300, width: 2),
+          borderSide: BorderSide(color: AppColors.gray300, width: 1),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: AppColors.gray300, width: 2),
+          borderSide: BorderSide(color: AppColors.gray300, width: 1),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide(
             color: Color.fromRGBO(218, 75, 220, 0.4),
-            width: 2,
+            width: 1,
           ),
         ),
       ),
