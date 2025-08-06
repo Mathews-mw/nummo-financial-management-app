@@ -23,13 +23,13 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
     )..where((row) => row.id.equals(id))).go();
   }
 
-  Future<List<TransactionsTableData>> getTransactions() async {
+  Future<List<TransactionsTableData>> findMany() async {
     final data = await select(transactionsTable).get();
 
     return data;
   }
 
-  Future<TransactionsTableData> getUniqueTransaction(int id) async {
+  Future<TransactionsTableData> getUnique(int id) async {
     final transaction = await (select(
       transactionsTable,
     )..where((row) => row.id.equals(id))).getSingle();

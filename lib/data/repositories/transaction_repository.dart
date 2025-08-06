@@ -11,20 +11,33 @@ class TransactionRepository {
 
   TransactionRepository({required this.transactionDao});
 
-  Future<void> createTransaction({
+  Future<Transaction> createTransaction({
     required String title,
     required double value,
     required TransactionType type,
     required TransactionCategory category,
+    DateTime? createdAt,
   }) async {
-    await transactionDao.insertTransaction(
+    final result = await transactionDao.insertTransaction(
       TransactionsTableCompanion(
         title: Value(title),
         value: Value(value),
         type: Value(type),
         category: Value(category),
+        createdAt: createdAt != null ? Value(createdAt) : Value(DateTime.now()),
       ),
     );
+
+    final newTransaction = Transaction(
+      id: result,
+      title: title,
+      value: value,
+      type: type,
+      category: category,
+      createdAt: createdAt ?? DateTime.now(),
+    );
+
+    return newTransaction;
   }
 
   Future<bool> updateTransaction(Transaction transaction) async {
@@ -44,10 +57,10 @@ class TransactionRepository {
     return await transactionDao.deleteTransaction(id);
   }
 
-  Future<List<Transaction>> getTransactions() async {
+  Future<List<Transaction>> findMany() async {
     final List<Transaction> tmp = [];
 
-    final transactionsData = await transactionDao.getTransactions();
+    final transactionsData = await transactionDao.findMany();
 
     return transactionsData.map((data) {
       return Transaction(
@@ -63,7 +76,7 @@ class TransactionRepository {
   }
 
   Future<Transaction> getTransaction(int id) async {
-    final data = await transactionDao.getUniqueTransaction(id);
+    final data = await transactionDao.getUnique(id);
 
     return Transaction(
       id: data.id,

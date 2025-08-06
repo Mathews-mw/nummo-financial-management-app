@@ -1,11 +1,11 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:nummo/@exceptions/invalid_credentials_exception.dart';
+
 import 'package:nummo/data/models/user.dart';
 import 'package:nummo/utils/password_encryption.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:nummo/data/repositories/user_repository.dart';
+import 'package:nummo/@exceptions/invalid_credentials_exception.dart';
 
 class UserProvider with ChangeNotifier {
   final UserRepository repository;
@@ -63,18 +63,12 @@ class UserProvider with ChangeNotifier {
     required String password,
     String? avatarUrl,
   }) async {
-    await Future.delayed(Duration(seconds: 1));
-
     await repository.createUser(
       name: name,
       email: email,
       password: password,
       avatarUrl: avatarUrl,
     );
-
-    print('User created successfully!');
-    _user = user;
-    notifyListeners();
   }
 
   Future<User?> getUserByEmail(String email) async {

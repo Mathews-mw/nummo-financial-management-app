@@ -1,14 +1,18 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import 'package:nummo/@types/transaction_category.dart';
+import 'package:provider/provider.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 
 import 'package:nummo/theme/app_colors.dart';
+import 'package:nummo/@types/transaction_type.dart';
 import 'package:nummo/components/custom_button.dart';
+import 'package:nummo/@types/transaction_category.dart';
+import 'package:nummo/utils/currency_format_remover.dart';
 import 'package:nummo/components/custom_text_field.dart';
+import 'package:nummo/providers/transaction_provider.dart';
 import 'package:nummo/@mixins/form_validations_mixin.dart';
 import 'package:nummo/components/custom_dropdown_button.dart';
+import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 
 class AddTransaction extends StatefulWidget {
   const AddTransaction({super.key});
@@ -20,7 +24,7 @@ class AddTransaction extends StatefulWidget {
 class _AddTransactionState extends State<AddTransaction>
     with FormValidationsMixin {
   bool _isLoading = false;
-  String? _moneyFlow;
+  TransactionType? _moneyFlow;
   TransactionCategory? _dropdownValue;
   DateTime? _selectedDate;
 
@@ -60,7 +64,43 @@ class _AddTransactionState extends State<AddTransaction>
 
     _formKey.currentState?.save();
 
-    setState(() => _isLoading = false);
+    try {
+      final transactionProvider = Provider.of<TransactionProvider>(
+        context,
+        listen: false,
+      );
+
+      await transactionProvider.createTransaction(
+        title: _formData['title'] as String,
+        value: CurrencyFormatRemover.parseBrl(_formData['value'] as String),
+        type: _moneyFlow!,
+        category: _dropdownValue!,
+        createdAt: _selectedDate,
+      );
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Transação cadastrada com sucesso!')),
+        );
+
+        Navigator.of(context).pop();
+      }
+    } catch (e) {
+      print('Erro while try to create a new transaction: $e');
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Ops! Parece que aconteceu algum erro durante o processo...',
+            ),
+          ),
+        );
+
+        Navigator.of(context).pop();
+      }
+    } finally {
+      setState(() => _isLoading = false);
+    }
   }
 
   @override
@@ -159,8 +199,7 @@ class _AddTransactionState extends State<AddTransaction>
                                       textInputAction: TextInputAction.next,
                                       validator: isNotEmpty,
                                       onSaved: (value) {
-                                        _formData['transactionValue'] =
-                                            value ?? '';
+                                        _formData['value'] = value ?? '';
                                       },
                                     ),
                                   ),
@@ -221,7 +260,8 @@ class _AddTransactionState extends State<AddTransaction>
                                     child: GestureDetector(
                                       onTap: () {
                                         setModalState(
-                                          () => _moneyFlow = 'inflow',
+                                          () => _moneyFlow =
+                                              TransactionType.income,
                                         );
                                       },
                                       child: Container(
@@ -230,14 +270,18 @@ class _AddTransactionState extends State<AddTransaction>
                                           horizontal: 20,
                                         ),
                                         decoration: BoxDecoration(
-                                          color: _moneyFlow == 'inflow'
+                                          color:
+                                              _moneyFlow ==
+                                                  TransactionType.income
                                               ? Colors.green.shade50
                                               : AppColors.gray200,
                                           borderRadius: BorderRadius.circular(
                                             8,
                                           ),
                                           border: BoxBorder.all(
-                                            color: _moneyFlow == 'inflow'
+                                            color:
+                                                _moneyFlow ==
+                                                    TransactionType.income
                                                 ? Colors.green
                                                 : AppColors.gray300,
                                             width: 1,
@@ -270,7 +314,8 @@ class _AddTransactionState extends State<AddTransaction>
                                     child: GestureDetector(
                                       onTap: () {
                                         setModalState(
-                                          () => _moneyFlow = 'outflow',
+                                          () => _moneyFlow =
+                                              TransactionType.outcome,
                                         );
                                       },
                                       child: Container(
@@ -279,14 +324,18 @@ class _AddTransactionState extends State<AddTransaction>
                                           horizontal: 20,
                                         ),
                                         decoration: BoxDecoration(
-                                          color: _moneyFlow == 'outflow'
+                                          color:
+                                              _moneyFlow ==
+                                                  TransactionType.outcome
                                               ? Colors.red.shade50
                                               : AppColors.gray200,
                                           borderRadius: BorderRadius.circular(
                                             8,
                                           ),
                                           border: BoxBorder.all(
-                                            color: _moneyFlow == 'outflow'
+                                            color:
+                                                _moneyFlow ==
+                                                    TransactionType.outcome
                                                 ? Colors.redAccent
                                                 : AppColors.gray300,
                                             width: 1,
@@ -350,14 +399,3 @@ class _AddTransactionState extends State<AddTransaction>
     );
   }
 }
-
-final dropMenuOptions = [
-  'Mercado',
-  'Contas',
-  'Aluguel',
-  'Salário',
-  'Despesas fixas',
-  'Shopping',
-  'Online',
-  'Outros',
-];

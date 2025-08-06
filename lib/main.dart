@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:nummo/data/repositories/transaction_repository.dart';
+import 'package:nummo/providers/transaction_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -27,9 +29,13 @@ void main() async {
 class MyApp extends StatelessWidget {
   final AppDatabase appDatabase = AppDatabase();
   late final UserRepository userRepository;
+  late final TransactionRepository transactionRepository;
 
   MyApp({super.key}) {
     userRepository = UserRepository(userDao: appDatabase.userDao);
+    transactionRepository = TransactionRepository(
+      transactionDao: appDatabase.transactionDao,
+    );
   }
 
   @override
@@ -37,6 +43,9 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => UserProvider(userRepository)),
+        ChangeNotifierProvider(
+          create: (_) => TransactionProvider(transactionRepository),
+        ),
       ],
       child: MaterialApp(
         title: 'Nummo - Gestão de finanças',
