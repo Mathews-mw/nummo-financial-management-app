@@ -1,70 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
-
 import 'package:nummo/theme/app_colors.dart';
-import 'package:nummo/providers/transaction_provider.dart';
-import 'package:nummo/ui/screens/home/transaction_item_tile.dart';
+import 'package:nummo/ui/screens/monthly_budget/budget_item_tile.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:provider/provider.dart';
 
-class TransactionsList extends StatefulWidget {
-  const TransactionsList({super.key});
+class BudgetList extends StatefulWidget {
+  const BudgetList({super.key});
 
   @override
-  State<TransactionsList> createState() => _TransactionsListState();
+  State<BudgetList> createState() => _BudgetListState();
 }
 
-class _TransactionsListState extends State<TransactionsList> {
+class _BudgetListState extends State<BudgetList> {
   bool _isLoading = false;
 
   @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      loadTransactions();
-    });
-  }
-
-  Future<void> loadTransactions() async {
-    setState(() => _isLoading = true);
-
-    try {
-      final transactionProvider = Provider.of<TransactionProvider>(
-        context,
-        listen: false,
-      );
-
-      await transactionProvider.loadTransactions();
-    } catch (e) {
-      print('Error loading transactions: $e');
-    } finally {
-      setState(() => _isLoading = false);
-    }
-  }
-
-  Future<void> deleteTransaction(int transactionId) async {
-    setState(() => _isLoading = true);
-
-    try {
-      final transactionProvider = Provider.of<TransactionProvider>(
-        context,
-        listen: false,
-      );
-
-      await transactionProvider.deleteTransaction(transactionId);
-    } catch (e) {
-      print('Error delete transactions: $e');
-    } finally {
-      setState(() => _isLoading = false);
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Consumer<TransactionProvider>(
-      builder: (ctx, transactionProvider, child) {
-        final transactions = transactionProvider.transactions;
+    return Consumer(
+      builder: (ctx, provider, child) {
+        final budgetList = [1, 2, 3];
 
         if (_isLoading) {
           return Center(
@@ -95,7 +50,7 @@ class _TransactionsListState extends State<TransactionsList> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'LANÇAMENTOS',
+                        'ORÇAMENTOS CADASTRADOS',
                         style: TextStyle(
                           color: AppColors.gray500,
                           fontSize: 12,
@@ -109,7 +64,7 @@ class _TransactionsListState extends State<TransactionsList> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
-                          transactions.length.toString(),
+                          '10',
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
@@ -119,8 +74,8 @@ class _TransactionsListState extends State<TransactionsList> {
                     ],
                   ),
                 ),
-                Divider(thickness: 0.2, color: AppColors.gray400, height: 0),
-                if (transactions.isEmpty)
+                Divider(thickness: 0.2, color: AppColors.gray400, height: 1),
+                if (budgetList.isEmpty)
                   Padding(
                     padding: const EdgeInsets.all(20),
                     child: Row(
@@ -133,7 +88,7 @@ class _TransactionsListState extends State<TransactionsList> {
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(
-                            'Você ainda não registrou despesas ou receitas neste mês.',
+                            'Você ainda não registrou nenhum orçamento.',
                             softWrap: true,
                             style: TextStyle(color: AppColors.gray500),
                           ),
@@ -148,7 +103,7 @@ class _TransactionsListState extends State<TransactionsList> {
                       color: AppColors.gray400,
                       height: 0,
                     ),
-                    itemCount: transactions.length,
+                    itemCount: 50,
                     itemBuilder: (ctx, index) {
                       return Slidable(
                         endActionPane: ActionPane(
@@ -196,9 +151,9 @@ class _TransactionsListState extends State<TransactionsList> {
                                       ),
                                       TextButton(
                                         onPressed: () async {
-                                          await deleteTransaction(
-                                            transactions[index].id,
-                                          );
+                                          // await deleteTransaction(
+                                          //   budgetList[index].id,
+                                          // );
 
                                           Navigator.pop(ctx, true);
                                         },
@@ -216,9 +171,7 @@ class _TransactionsListState extends State<TransactionsList> {
                             ),
                           ],
                         ),
-                        child: TransactionItemTile(
-                          transaction: transactions[index],
-                        ),
+                        child: BudgetItemTile(),
                       );
                     },
                   ),

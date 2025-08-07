@@ -35,6 +35,13 @@ class TransactionProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> deleteTransaction(int transactionId) async {
+    await _repository.deleteTransaction(transactionId);
+
+    _transactions.removeWhere((transaction) => transaction.id == transactionId);
+    notifyListeners();
+  }
+
   Future<void> loadTransactions() async {
     final transactions = await _repository.findMany();
 

@@ -24,7 +24,15 @@ class TransactionDao extends DatabaseAccessor<AppDatabase>
   }
 
   Future<List<TransactionsTableData>> findMany() async {
-    final data = await select(transactionsTable).get();
+    // final data = await select(transactionsTable).get();
+    final data =
+        await (select(transactionsTable)..orderBy([
+              (t) => OrderingTerm(
+                expression: t.createdAt,
+                mode: OrderingMode.desc,
+              ),
+            ]))
+            .get();
 
     return data;
   }

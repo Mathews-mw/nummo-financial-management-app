@@ -6,7 +6,7 @@ import 'package:nummo/ui/screens/perfil_screen.dart';
 import 'package:nummo/ui/screens/signup_screen.dart';
 import 'package:nummo/ui/screens/opening_screen.dart';
 import 'package:nummo/ui/screens/notifications_screen.dart';
-import 'package:nummo/ui/screens/monthly_budget_screen.dart';
+import 'package:nummo/ui/screens/monthly_budget/monthly_budget_screen.dart';
 import 'package:nummo/ui/screens/bills_management_screen.dart';
 
 class AppRoutes {

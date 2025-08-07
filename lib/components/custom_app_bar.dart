@@ -10,6 +10,7 @@ import 'package:nummo/providers/user_provider.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
+  final String? subtitle;
   final List<Widget>? actions;
   final void Function()? onOpenDrawer;
   final bool showAvatar;
@@ -17,6 +18,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({
     super.key,
     this.title,
+    this.subtitle,
     this.actions,
     this.onOpenDrawer,
     this.showAvatar = true,
@@ -29,12 +31,24 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: Colors.white,
       title: title != null
-          ? Text(
-              title!,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: AppColors.gray700,
-              ),
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title!,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.gray700,
+                  ),
+                ),
+                Text(
+                  subtitle ?? '',
+                  style: TextStyle(
+                    fontSize: subtitle != null ? 14 : 0,
+                    color: AppColors.gray500,
+                  ),
+                ),
+              ],
             )
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
