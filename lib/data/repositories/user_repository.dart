@@ -73,14 +73,16 @@ class UserRepository {
   Future<User?> getUserByEmail(String email) async {
     final data = await userDao.getUserByEmail(email);
 
-    if (data != null) {
-      return User(
-        id: data.id,
-        name: data.name,
-        email: data.email,
-        password: data.password,
-        avatarUrl: data.avatarUrl,
-      );
+    if (data == null) {
+      return null;
     }
+
+    return User(
+      id: data.id,
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      avatarUrl: data.avatarUrl,
+    );
   }
 }

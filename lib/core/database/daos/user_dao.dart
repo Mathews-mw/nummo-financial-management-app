@@ -40,8 +40,6 @@ class UserDao extends DatabaseAccessor<AppDatabase> with _$UserDaoMixin {
       usersTable,
     )..where((row) => row.email.equals(email))).getSingleOrNull();
 
-    print('user dao: $user');
-
     return user;
   }
 }

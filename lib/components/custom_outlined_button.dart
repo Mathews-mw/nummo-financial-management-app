@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nummo/theme/app_colors.dart';
 
-enum Variant {
+enum OutlineVariant {
   primary,
   secondary,
   optimistic,
@@ -12,27 +12,27 @@ enum Variant {
 
   Color get color {
     switch (this) {
-      case Variant.primary:
+      case OutlineVariant.primary:
         return AppColors.primary;
-      case Variant.secondary:
+      case OutlineVariant.secondary:
         return AppColors.secondary;
-      case Variant.vibrant:
+      case OutlineVariant.vibrant:
         return AppColors.cyan;
-      case Variant.optimistic:
+      case OutlineVariant.optimistic:
         return AppColors.amber;
-      case Variant.muted:
+      case OutlineVariant.muted:
         return AppColors.gray400;
-      case Variant.success:
+      case OutlineVariant.success:
         return AppColors.success;
-      case Variant.danger:
+      case OutlineVariant.danger:
         return AppColors.danger;
     }
   }
 }
 
-class CustomButton extends StatelessWidget {
+class CustomOutlinedButton extends StatelessWidget {
   final String label;
-  final Variant? variant;
+  final OutlineVariant? variant;
   final Widget? icon;
   final bool isLoading;
   final bool disabled;
@@ -40,10 +40,10 @@ class CustomButton extends StatelessWidget {
   final IconAlignment? iconAlignment;
   final void Function() onPressed;
 
-  const CustomButton({
+  const CustomOutlinedButton({
     super.key,
     required this.label,
-    this.variant = Variant.primary,
+    this.variant = OutlineVariant.primary,
     this.icon,
     this.isLoading = false,
     this.disabled = false,
@@ -54,19 +54,24 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FilledButton.icon(
-      style: FilledButton.styleFrom(
-        disabledBackgroundColor: Color.fromRGBO(218, 75, 220, 0.4),
+    return OutlinedButton.icon(
+      style: OutlinedButton.styleFrom(
+        side: BorderSide(
+          color: variant != null ? variant!.color : AppColors.primary,
+          width: 2,
+          strokeAlign: 1,
+        ),
         disabledForegroundColor: AppColors.gray400,
-        backgroundColor: variant != null ? variant!.color : AppColors.primary,
-        foregroundColor: AppColors.foreground,
+        foregroundColor: variant != null ? variant!.color : AppColors.primary,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
         textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
       ),
       label: Text(isLoading ? 'Carregando...' : label),
       icon: isLoading
           ? CircularProgressIndicator(
-              backgroundColor: AppColors.primary,
+              backgroundColor: variant != null
+                  ? variant!.color
+                  : AppColors.primary,
               constraints: BoxConstraints(minHeight: 22, minWidth: 22),
             )
           : icon,

@@ -2,31 +2,47 @@ import 'dart:io';
 import 'dart:async';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
-import 'package:nummo/@types/transaction_category.dart';
-import 'package:nummo/@types/transaction_type.dart';
-import 'package:nummo/core/database/daos/transaction_dao.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 
+import 'package:nummo/@types/recurrence_type.dart';
+import 'package:nummo/@types/transaction_type.dart';
 import 'package:nummo/core/database/daos/user_dao.dart';
+import 'package:nummo/@types/transaction_category.dart';
+import 'package:nummo/core/database/daos/budget_dao.dart';
+import 'package:nummo/core/database/daos/transaction_dao.dart';
 
 part 'app_database.g.dart'; // Arquivo gerado automaticamente pelo build_runner
 
 class UsersTable extends Table {
   IntColumn get id => integer().named("id").autoIncrement()();
   TextColumn get name => text().named("name").withLength(min: 1, max: 50)();
-  TextColumn get email => text()
-      .named('email')
-      .customConstraint('UNIQUE')
-      .customConstraint('NOT NULL')();
+  TextColumn get email => text().named('email').customConstraint('UNIQUE')();
   TextColumn get password =>
       text().named('password').withLength(min: 6, max: 100)();
   TextColumn get avatarUrl => text().named('avatar_url').nullable()();
 }
 
+class BudgetsTable extends Table {
+  IntColumn get id => integer().named("id").autoIncrement()();
+  RealColumn get total => real().named("total")();
+  DateTimeColumn get period =>
+      dateTime().named("period").customConstraint('UNIQUE')();
+  DateTimeColumn get createdAt =>
+      dateTime().withDefault(currentDateAndTime).named('created_at')();
+}
+
 class TransactionsTable extends Table {
   IntColumn get id => integer().named("id").autoIncrement()();
+  IntColumn get budgetId => integer()
+      .named("budget_id")
+      .references(
+        BudgetsTable,
+        #id,
+        onUpdate: KeyAction.cascade,
+        onDelete: KeyAction.cascade,
+      )();
   TextColumn get title => text().named("title").withLength(min: 1, max: 50)();
   RealColumn get value => real().named("value")();
   TextColumn get type => textEnum<TransactionType>().named("type")();
@@ -38,15 +54,31 @@ class TransactionsTable extends Table {
   DateTimeColumn get updatedAt => dateTime().named('updated_at').nullable()();
 }
 
+class BillRemindersTable extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get title => text()();
+  DateTimeColumn get dueDate => dateTime().nullable().named('due_date')();
+  IntColumn get dayOfMonth => integer().nullable().named('day_of_month')();
+  TextColumn get recurrenceType =>
+      textEnum<RecurrenceType>().named('recurrence_type')();
+  TextColumn get category => textEnum<TransactionCategory>()();
+  TextColumn get notes => text().nullable()();
+  BoolColumn get isActive =>
+      boolean().withDefault(const Constant(true)).named('is_active')();
+  DateTimeColumn get createdAt =>
+      dateTime().withDefault(currentDateAndTime).named('created_at')();
+  DateTimeColumn get updatedAt => dateTime().named('updated_at').nullable()();
+}
+
 @DriftDatabase(
-  tables: [UsersTable, TransactionsTable],
-  daos: [UserDao, TransactionDao],
+  tables: [UsersTable, BudgetsTable, TransactionsTable, BillRemindersTable],
+  daos: [UserDao, BudgetDao, TransactionDao],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 10;
+  int get schemaVersion => 15;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(

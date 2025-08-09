@@ -8,7 +8,10 @@ import 'package:nummo/providers/transaction_provider.dart';
 import 'package:nummo/ui/screens/home/transaction_item_tile.dart';
 
 class TransactionsList extends StatefulWidget {
-  const TransactionsList({super.key});
+  final int year;
+  final int month;
+
+  const TransactionsList({super.key, required this.month, required this.year});
 
   @override
   State<TransactionsList> createState() => _TransactionsListState();
@@ -22,11 +25,20 @@ class _TransactionsListState extends State<TransactionsList> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      loadTransactions();
+      loadTransactions(month: widget.month, year: widget.year);
     });
   }
 
-  Future<void> loadTransactions() async {
+  @override
+  void didUpdateWidget(TransactionsList oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.month != oldWidget.month) {
+      loadTransactions(month: widget.month, year: widget.year);
+    }
+  }
+
+  Future<void> loadTransactions({required int month, required int year}) async {
     setState(() => _isLoading = true);
 
     try {
@@ -35,7 +47,7 @@ class _TransactionsListState extends State<TransactionsList> {
         listen: false,
       );
 
-      await transactionProvider.loadTransactions();
+      await transactionProvider.loadTransactions(month: month, year: year);
     } catch (e) {
       print('Error loading transactions: $e');
     } finally {

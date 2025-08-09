@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:nummo/data/repositories/transaction_repository.dart';
-import 'package:nummo/providers/transaction_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:nummo/app_routes.dart';
 import 'package:nummo/theme/theme.dart';
-import 'package:nummo/ui/screens/home/home_screen.dart';
 import 'package:nummo/ui/screens/login_screen.dart';
 import 'package:nummo/providers/user_provider.dart';
 import 'package:nummo/ui/screens/signup_screen.dart';
 import 'package:nummo/ui/screens/perfil_screen.dart';
 import 'package:nummo/ui/screens/opening_screen.dart';
+import 'package:nummo/providers/budget_provider.dart';
 import 'package:nummo/core/database/app_database.dart';
+import 'package:nummo/ui/screens/home/home_screen.dart';
+import 'package:nummo/providers/transaction_provider.dart';
 import 'package:nummo/ui/screens/notifications_screen.dart';
-import 'package:nummo/ui/screens/monthly_budget/monthly_budget_screen.dart';
 import 'package:nummo/data/repositories/user_repository.dart';
-import 'package:nummo/ui/screens/bills_management_screen.dart';
+import 'package:nummo/ui/screens/bills_management/bills_management_screen.dart';
+import 'package:nummo/data/repositories/budget_repository.dart';
+import 'package:nummo/data/repositories/transaction_repository.dart';
+import 'package:nummo/ui/screens/monthly_budget/monthly_budget_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,10 +32,12 @@ void main() async {
 class MyApp extends StatelessWidget {
   final AppDatabase appDatabase = AppDatabase();
   late final UserRepository userRepository;
+  late final BudgetRepository budgetRepository;
   late final TransactionRepository transactionRepository;
 
   MyApp({super.key}) {
     userRepository = UserRepository(userDao: appDatabase.userDao);
+    budgetRepository = BudgetRepository(budgetDao: appDatabase.budgetDao);
     transactionRepository = TransactionRepository(
       transactionDao: appDatabase.transactionDao,
     );
@@ -43,6 +48,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => UserProvider(userRepository)),
+        ChangeNotifierProvider(create: (_) => BudgetProvider(budgetRepository)),
         ChangeNotifierProvider(
           create: (_) => TransactionProvider(transactionRepository),
         ),
@@ -52,6 +58,12 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: lightTheme,
         initialRoute: AppRoutes.opening,
+        localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: [Locale('en', 'US'), Locale('pt', 'BR')],
         routes: {
           AppRoutes.opening: (ctx) => OpeningScreen(),
           AppRoutes.login: (ctx) => LoginScreen(),

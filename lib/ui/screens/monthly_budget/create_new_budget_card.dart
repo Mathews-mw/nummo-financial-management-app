@@ -1,12 +1,15 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 
 import 'package:nummo/theme/app_colors.dart';
 import 'package:nummo/components/custom_button.dart';
+import 'package:nummo/providers/budget_provider.dart';
 import 'package:nummo/components/custom_text_field.dart';
 import 'package:nummo/components/month_year_picker.dart';
+import 'package:nummo/utils/currency_format_remover.dart';
 import 'package:nummo/@mixins/form_validations_mixin.dart';
 
 class CreateNewBudgetCard extends StatefulWidget {
@@ -18,7 +21,65 @@ class CreateNewBudgetCard extends StatefulWidget {
 
 class _CreateNewBudgetCardState extends State<CreateNewBudgetCard>
     with FormValidationsMixin {
+  bool _isLoading = false;
   ({int month, int year})? _selectedDate;
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final Map<String, Object> _formData = <String, Object>{};
+
+  Future<void> _handleCreateBudget() async {
+    setState(() => _isLoading = true);
+
+    final bool isValidForm = _formKey.currentState?.validate() ?? false;
+
+    if (!isValidForm || _selectedDate == null) {
+      setState(() => _isLoading = false);
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Por favor, preencha os campos!')));
+
+      return;
+    }
+
+    _formKey.currentState?.save();
+
+    try {
+      final budgetProvider = Provider.of<BudgetProvider>(
+        context,
+        listen: false,
+      );
+
+      await budgetProvider.createBudget(
+        total: CurrencyFormatRemover.parseBrl(_formData['total'] as String),
+        period: DateTime(_selectedDate!.year, _selectedDate!.month),
+      );
+
+      _formData.clear();
+      _formKey.currentState!.reset();
+      _selectedDate = null;
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Orçamento criado com sucesso!')),
+        );
+      }
+    } catch (e) {
+      print('Erro create budget: $e');
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Ops! Parece que aconteceu algum erro durante o processo...',
+            ),
+          ),
+        );
+      }
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +99,7 @@ class _CreateNewBudgetCardState extends State<CreateNewBudgetCard>
           Padding(
             padding: const EdgeInsets.all(20),
             child: Form(
+              key: _formKey,
               child: Column(
                 children: [
                   Row(
@@ -106,10 +168,10 @@ class _CreateNewBudgetCardState extends State<CreateNewBudgetCard>
                             ),
                           ],
                           textInputAction: TextInputAction.next,
-                          // validator: isNotEmpty,
-                          // onSaved: (value) {
-                          //   _formData['value'] = value ?? '';
-                          // },
+                          validator: isNotEmpty,
+                          onSaved: (value) {
+                            _formData['total'] = value ?? '';
+                          },
                         ),
                       ),
                     ],
@@ -120,8 +182,9 @@ class _CreateNewBudgetCardState extends State<CreateNewBudgetCard>
                       Expanded(
                         child: CustomButton(
                           label: 'Adicionar',
-                          // isLoading: _isLoading,
-                          onPressed: () {},
+                          isLoading: _isLoading,
+                          disabled: _isLoading,
+                          onPressed: _handleCreateBudget,
                         ),
                       ),
                     ],

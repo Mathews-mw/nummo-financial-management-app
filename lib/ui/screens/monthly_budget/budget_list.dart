@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:nummo/theme/app_colors.dart';
-import 'package:nummo/ui/screens/monthly_budget/budget_item_tile.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
+
+import 'package:nummo/theme/app_colors.dart';
+import 'package:nummo/providers/budget_provider.dart';
+import 'package:nummo/ui/screens/monthly_budget/budget_item_tile.dart';
 
 class BudgetList extends StatefulWidget {
   const BudgetList({super.key});
@@ -16,10 +18,36 @@ class _BudgetListState extends State<BudgetList> {
   bool _isLoading = false;
 
   @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      loadBudgets();
+    });
+  }
+
+  Future<void> loadBudgets() async {
+    setState(() => _isLoading = true);
+
+    try {
+      final budgetProvider = Provider.of<BudgetProvider>(
+        context,
+        listen: false,
+      );
+
+      await budgetProvider.loadBudgets();
+    } catch (e) {
+      print('Error loading budgets: $e');
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Consumer(
-      builder: (ctx, provider, child) {
-        final budgetList = [1, 2, 3];
+    return Consumer<BudgetProvider>(
+      builder: (ctx, budgetProvider, child) {
+        final budgetList = budgetProvider.budgets;
 
         if (_isLoading) {
           return Center(
@@ -27,7 +55,7 @@ class _BudgetListState extends State<BudgetList> {
               children: [
                 CircularProgressIndicator(),
                 const SizedBox(height: 10),
-                Text('Carregando transações...'),
+                Text('Carregando orçamentos...'),
               ],
             ),
           );
@@ -64,7 +92,7 @@ class _BudgetListState extends State<BudgetList> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
-                          '10',
+                          budgetList.length.toString(),
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
@@ -103,7 +131,7 @@ class _BudgetListState extends State<BudgetList> {
                       color: AppColors.gray400,
                       height: 0,
                     ),
-                    itemCount: 50,
+                    itemCount: budgetList.length,
                     itemBuilder: (ctx, index) {
                       return Slidable(
                         endActionPane: ActionPane(
@@ -171,7 +199,7 @@ class _BudgetListState extends State<BudgetList> {
                             ),
                           ],
                         ),
-                        child: BudgetItemTile(),
+                        child: BudgetItemTile(budget: budgetList[index]),
                       );
                     },
                   ),

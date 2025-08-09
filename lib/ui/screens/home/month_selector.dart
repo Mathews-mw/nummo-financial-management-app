@@ -5,7 +5,9 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:nummo/theme/app_colors.dart';
 
 class MonthSelector extends StatefulWidget {
-  const MonthSelector({super.key});
+  final void Function(int) onSelectMonth;
+
+  const MonthSelector({super.key, required this.onSelectMonth});
 
   @override
   State<MonthSelector> createState() => _MonthSelectorState();
@@ -49,6 +51,7 @@ class _MonthSelectorState extends State<MonthSelector> {
     if (index > 0) {
       setState(() {
         _selectedMonth = yearMonths[index - 1].$1;
+        widget.onSelectMonth(yearMonths[index - 1].$1);
         _scrollToIndex(index - 1);
       });
     }
@@ -60,6 +63,7 @@ class _MonthSelectorState extends State<MonthSelector> {
     if (index < yearMonths.length - 1) {
       setState(() {
         _selectedMonth = yearMonths[index + 1].$1;
+        widget.onSelectMonth(yearMonths[index + 1].$1);
         _scrollToIndex(index + 1);
       });
     }
@@ -107,6 +111,7 @@ class _MonthSelectorState extends State<MonthSelector> {
                   onTap: () {
                     setState(() {
                       _selectedMonth = yearMonths[index].$1;
+                      widget.onSelectMonth(yearMonths[index].$1);
                     });
                     _itemScrollController.scrollTo(
                       index: index,

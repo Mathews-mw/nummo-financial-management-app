@@ -12,6 +12,7 @@ class TransactionRepository {
   TransactionRepository({required this.transactionDao});
 
   Future<Transaction> createTransaction({
+    required int budgetId,
     required String title,
     required double value,
     required TransactionType type,
@@ -20,6 +21,7 @@ class TransactionRepository {
   }) async {
     final result = await transactionDao.insertTransaction(
       TransactionsTableCompanion(
+        budgetId: Value(budgetId),
         title: Value(title),
         value: Value(value),
         type: Value(type),
@@ -58,9 +60,29 @@ class TransactionRepository {
   }
 
   Future<List<Transaction>> findMany() async {
-    final List<Transaction> tmp = [];
-
     final transactionsData = await transactionDao.findMany();
+
+    return transactionsData.map((data) {
+      return Transaction(
+        id: data.id,
+        title: data.title,
+        value: data.value,
+        type: data.type,
+        category: data.category,
+        createdAt: data.createdAt,
+        updatedAt: data.updatedAt,
+      );
+    }).toList();
+  }
+
+  Future<List<Transaction>> getTransactionsByMonthAndYear({
+    required int month,
+    required int year,
+  }) async {
+    final transactionsData = await transactionDao.getTransactionsByMonthAndYear(
+      month: month,
+      year: year,
+    );
 
     return transactionsData.map((data) {
       return Transaction(
@@ -87,5 +109,12 @@ class TransactionRepository {
       createdAt: data.createdAt,
       updatedAt: data.updatedAt,
     );
+  }
+
+  Future<double> getTotalSpentForBudget(
+    int budgetId, {
+    TransactionType? type,
+  }) async {
+    return await transactionDao.getTotalSpentForBudget(budgetId, type: type);
   }
 }

@@ -15,6 +15,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int _selectedMonth = DateTime.now().month;
+  int? _selectedBudgetId;
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   void _handleOpenDrawer() {
@@ -36,15 +39,29 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         child: Column(
           children: [
-            MonthSelector(),
+            MonthSelector(
+              onSelectMonth: (month) {
+                setState(() => _selectedMonth = month);
+              },
+            ),
             const SizedBox(height: 20),
-            BudgetCard(),
+            BudgetCard(
+              month: _selectedMonth,
+              year: DateTime.now().year,
+              onGetBudget: (budgetId) {
+                setState(() => _selectedBudgetId = budgetId);
+              },
+            ),
             const SizedBox(height: 20),
-            TransactionsList(),
+            TransactionsList(month: _selectedMonth, year: DateTime.now().year),
           ],
         ),
       ),
-      floatingActionButton: AddTransaction(),
+      floatingActionButton: AddTransaction(
+        budgetId: _selectedBudgetId,
+        year: DateTime.now().year,
+        month: _selectedMonth,
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
