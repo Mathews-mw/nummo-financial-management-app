@@ -7,6 +7,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:nummo/app_routes.dart';
 import 'package:nummo/theme/app_colors.dart';
 import 'package:nummo/providers/user_provider.dart';
+import 'package:nummo/providers/theme_provider.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
@@ -27,9 +28,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context, listen: false).user;
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDarkMode = themeProvider.themeMode == ThemeMode.dark;
 
     return AppBar(
-      backgroundColor: Colors.white,
+      backgroundColor: isDarkMode ? AppColors.gray800 : Colors.white,
       title: title != null
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,14 +41,15 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   title!,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: AppColors.gray700,
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontSize: 20,
                   ),
                 ),
                 Text(
                   subtitle ?? '',
                   style: TextStyle(
                     fontSize: subtitle != null ? 14 : 0,
-                    color: AppColors.gray500,
+                    color: isDarkMode ? AppColors.gray400 : AppColors.gray500,
                   ),
                 ),
               ],
@@ -59,7 +63,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ),
                 Text(
                   'Vamos organizar suas finanças?',
-                  style: TextStyle(fontSize: 14, color: AppColors.gray500),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: themeProvider.themeMode == ThemeMode.dark
+                        ? AppColors.gray300
+                        : AppColors.gray600,
+                  ),
                 ),
               ],
             ),
@@ -75,6 +84,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                       enabled: user == null,
                       ignoreContainers: true,
                       child: CircleAvatar(
+                        backgroundColor: Color.fromRGBO(218, 75, 220, 0.3),
                         backgroundImage: user?.avatarUrl != null
                             ? CachedNetworkImageProvider(user!.avatarUrl!)
                             : null,
@@ -114,16 +124,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 showDialog<bool>(
                   context: context,
                   builder: (ctx) => AlertDialog(
-                    backgroundColor: Colors.white,
                     title: const Text('Deseja sair do App?'),
                     content: const Text(
                       'Você tem certeza que deseja sair da aplicação?',
                     ),
                     actions: [
                       TextButton(
-                        style: TextButton.styleFrom(
-                          foregroundColor: AppColors.gray700,
-                        ),
                         onPressed: () {
                           Provider.of<UserProvider>(
                             context,
@@ -139,7 +145,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                       ),
                       TextButton(
                         style: TextButton.styleFrom(
-                          foregroundColor: AppColors.gray600,
+                          foregroundColor: Theme.of(
+                            context,
+                          ).colorScheme.onSurface,
                         ),
                         onPressed: () => Navigator.pop(context, false),
                         child: const Text('Cancelar'),

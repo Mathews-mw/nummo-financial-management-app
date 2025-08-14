@@ -12,6 +12,7 @@ import 'package:nummo/core/database/daos/user_dao.dart';
 import 'package:nummo/@types/transaction_category.dart';
 import 'package:nummo/core/database/daos/budget_dao.dart';
 import 'package:nummo/core/database/daos/transaction_dao.dart';
+import 'package:nummo/core/database/daos/bill_reminder_dao.dart';
 
 part 'app_database.g.dart'; // Arquivo gerado automaticamente pelo build_runner
 
@@ -65,6 +66,7 @@ class BillRemindersTable extends Table {
   TextColumn get notes => text().nullable()();
   BoolColumn get isActive =>
       boolean().withDefault(const Constant(true)).named('is_active')();
+  IntColumn get notificationId => integer().nullable()();
   DateTimeColumn get createdAt =>
       dateTime().withDefault(currentDateAndTime).named('created_at')();
   DateTimeColumn get updatedAt => dateTime().named('updated_at').nullable()();
@@ -72,13 +74,13 @@ class BillRemindersTable extends Table {
 
 @DriftDatabase(
   tables: [UsersTable, BudgetsTable, TransactionsTable, BillRemindersTable],
-  daos: [UserDao, BudgetDao, TransactionDao],
+  daos: [UserDao, BudgetDao, TransactionDao, BillReminderDao],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 15;
+  int get schemaVersion => 17;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(

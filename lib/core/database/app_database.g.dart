@@ -1269,6 +1269,17 @@ class $BillRemindersTableTable extends BillRemindersTable
     ),
     defaultValue: const Constant(true),
   );
+  static const VerificationMeta _notificationIdMeta = const VerificationMeta(
+    'notificationId',
+  );
+  @override
+  late final GeneratedColumn<int> notificationId = GeneratedColumn<int>(
+    'notification_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -1302,6 +1313,7 @@ class $BillRemindersTableTable extends BillRemindersTable
     category,
     notes,
     isActive,
+    notificationId,
     createdAt,
     updatedAt,
   ];
@@ -1353,6 +1365,15 @@ class $BillRemindersTableTable extends BillRemindersTable
       context.handle(
         _isActiveMeta,
         isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    }
+    if (data.containsKey('notification_id')) {
+      context.handle(
+        _notificationIdMeta,
+        notificationId.isAcceptableOrUnknown(
+          data['notification_id']!,
+          _notificationIdMeta,
+        ),
       );
     }
     if (data.containsKey('created_at')) {
@@ -1412,6 +1433,10 @@ class $BillRemindersTableTable extends BillRemindersTable
         DriftSqlType.bool,
         data['${effectivePrefix}is_active'],
       )!,
+      notificationId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}notification_id'],
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -1448,6 +1473,7 @@ class BillRemindersTableData extends DataClass
   final TransactionCategory category;
   final String? notes;
   final bool isActive;
+  final int? notificationId;
   final DateTime createdAt;
   final DateTime? updatedAt;
   const BillRemindersTableData({
@@ -1459,6 +1485,7 @@ class BillRemindersTableData extends DataClass
     required this.category,
     this.notes,
     required this.isActive,
+    this.notificationId,
     required this.createdAt,
     this.updatedAt,
   });
@@ -1487,6 +1514,9 @@ class BillRemindersTableData extends DataClass
       map['notes'] = Variable<String>(notes);
     }
     map['is_active'] = Variable<bool>(isActive);
+    if (!nullToAbsent || notificationId != null) {
+      map['notification_id'] = Variable<int>(notificationId);
+    }
     map['created_at'] = Variable<DateTime>(createdAt);
     if (!nullToAbsent || updatedAt != null) {
       map['updated_at'] = Variable<DateTime>(updatedAt);
@@ -1510,6 +1540,9 @@ class BillRemindersTableData extends DataClass
           ? const Value.absent()
           : Value(notes),
       isActive: Value(isActive),
+      notificationId: notificationId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notificationId),
       createdAt: Value(createdAt),
       updatedAt: updatedAt == null && nullToAbsent
           ? const Value.absent()
@@ -1534,6 +1567,7 @@ class BillRemindersTableData extends DataClass
       ),
       notes: serializer.fromJson<String?>(json['notes']),
       isActive: serializer.fromJson<bool>(json['isActive']),
+      notificationId: serializer.fromJson<int?>(json['notificationId']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
     );
@@ -1556,6 +1590,7 @@ class BillRemindersTableData extends DataClass
       ),
       'notes': serializer.toJson<String?>(notes),
       'isActive': serializer.toJson<bool>(isActive),
+      'notificationId': serializer.toJson<int?>(notificationId),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime?>(updatedAt),
     };
@@ -1570,6 +1605,7 @@ class BillRemindersTableData extends DataClass
     TransactionCategory? category,
     Value<String?> notes = const Value.absent(),
     bool? isActive,
+    Value<int?> notificationId = const Value.absent(),
     DateTime? createdAt,
     Value<DateTime?> updatedAt = const Value.absent(),
   }) => BillRemindersTableData(
@@ -1581,6 +1617,9 @@ class BillRemindersTableData extends DataClass
     category: category ?? this.category,
     notes: notes.present ? notes.value : this.notes,
     isActive: isActive ?? this.isActive,
+    notificationId: notificationId.present
+        ? notificationId.value
+        : this.notificationId,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
   );
@@ -1598,6 +1637,9 @@ class BillRemindersTableData extends DataClass
       category: data.category.present ? data.category.value : this.category,
       notes: data.notes.present ? data.notes.value : this.notes,
       isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      notificationId: data.notificationId.present
+          ? data.notificationId.value
+          : this.notificationId,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
@@ -1614,6 +1656,7 @@ class BillRemindersTableData extends DataClass
           ..write('category: $category, ')
           ..write('notes: $notes, ')
           ..write('isActive: $isActive, ')
+          ..write('notificationId: $notificationId, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -1630,6 +1673,7 @@ class BillRemindersTableData extends DataClass
     category,
     notes,
     isActive,
+    notificationId,
     createdAt,
     updatedAt,
   );
@@ -1645,6 +1689,7 @@ class BillRemindersTableData extends DataClass
           other.category == this.category &&
           other.notes == this.notes &&
           other.isActive == this.isActive &&
+          other.notificationId == this.notificationId &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt);
 }
@@ -1659,6 +1704,7 @@ class BillRemindersTableCompanion
   final Value<TransactionCategory> category;
   final Value<String?> notes;
   final Value<bool> isActive;
+  final Value<int?> notificationId;
   final Value<DateTime> createdAt;
   final Value<DateTime?> updatedAt;
   const BillRemindersTableCompanion({
@@ -1670,6 +1716,7 @@ class BillRemindersTableCompanion
     this.category = const Value.absent(),
     this.notes = const Value.absent(),
     this.isActive = const Value.absent(),
+    this.notificationId = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   });
@@ -1682,6 +1729,7 @@ class BillRemindersTableCompanion
     required TransactionCategory category,
     this.notes = const Value.absent(),
     this.isActive = const Value.absent(),
+    this.notificationId = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
   }) : title = Value(title),
@@ -1696,6 +1744,7 @@ class BillRemindersTableCompanion
     Expression<String>? category,
     Expression<String>? notes,
     Expression<bool>? isActive,
+    Expression<int>? notificationId,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
   }) {
@@ -1708,6 +1757,7 @@ class BillRemindersTableCompanion
       if (category != null) 'category': category,
       if (notes != null) 'notes': notes,
       if (isActive != null) 'is_active': isActive,
+      if (notificationId != null) 'notification_id': notificationId,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
     });
@@ -1722,6 +1772,7 @@ class BillRemindersTableCompanion
     Value<TransactionCategory>? category,
     Value<String?>? notes,
     Value<bool>? isActive,
+    Value<int?>? notificationId,
     Value<DateTime>? createdAt,
     Value<DateTime?>? updatedAt,
   }) {
@@ -1734,6 +1785,7 @@ class BillRemindersTableCompanion
       category: category ?? this.category,
       notes: notes ?? this.notes,
       isActive: isActive ?? this.isActive,
+      notificationId: notificationId ?? this.notificationId,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -1772,6 +1824,9 @@ class BillRemindersTableCompanion
     if (isActive.present) {
       map['is_active'] = Variable<bool>(isActive.value);
     }
+    if (notificationId.present) {
+      map['notification_id'] = Variable<int>(notificationId.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -1792,6 +1847,7 @@ class BillRemindersTableCompanion
           ..write('category: $category, ')
           ..write('notes: $notes, ')
           ..write('isActive: $isActive, ')
+          ..write('notificationId: $notificationId, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
@@ -1811,6 +1867,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final UserDao userDao = UserDao(this as AppDatabase);
   late final BudgetDao budgetDao = BudgetDao(this as AppDatabase);
   late final TransactionDao transactionDao = TransactionDao(
+    this as AppDatabase,
+  );
+  late final BillReminderDao billReminderDao = BillReminderDao(
     this as AppDatabase,
   );
   @override
@@ -2727,6 +2786,7 @@ typedef $$BillRemindersTableTableCreateCompanionBuilder =
       required TransactionCategory category,
       Value<String?> notes,
       Value<bool> isActive,
+      Value<int?> notificationId,
       Value<DateTime> createdAt,
       Value<DateTime?> updatedAt,
     });
@@ -2740,6 +2800,7 @@ typedef $$BillRemindersTableTableUpdateCompanionBuilder =
       Value<TransactionCategory> category,
       Value<String?> notes,
       Value<bool> isActive,
+      Value<int?> notificationId,
       Value<DateTime> createdAt,
       Value<DateTime?> updatedAt,
     });
@@ -2796,6 +2857,11 @@ class $$BillRemindersTableTableFilterComposer
 
   ColumnFilters<bool> get isActive => $composableBuilder(
     column: $table.isActive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get notificationId => $composableBuilder(
+    column: $table.notificationId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -2859,6 +2925,11 @@ class $$BillRemindersTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get notificationId => $composableBuilder(
+    column: $table.notificationId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -2907,6 +2978,11 @@ class $$BillRemindersTableTableAnnotationComposer
 
   GeneratedColumn<bool> get isActive =>
       $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<int> get notificationId => $composableBuilder(
+    column: $table.notificationId,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -2963,6 +3039,7 @@ class $$BillRemindersTableTableTableManager
                 Value<TransactionCategory> category = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<bool> isActive = const Value.absent(),
+                Value<int?> notificationId = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime?> updatedAt = const Value.absent(),
               }) => BillRemindersTableCompanion(
@@ -2974,6 +3051,7 @@ class $$BillRemindersTableTableTableManager
                 category: category,
                 notes: notes,
                 isActive: isActive,
+                notificationId: notificationId,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
               ),
@@ -2987,6 +3065,7 @@ class $$BillRemindersTableTableTableManager
                 required TransactionCategory category,
                 Value<String?> notes = const Value.absent(),
                 Value<bool> isActive = const Value.absent(),
+                Value<int?> notificationId = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime?> updatedAt = const Value.absent(),
               }) => BillRemindersTableCompanion.insert(
@@ -2998,6 +3077,7 @@ class $$BillRemindersTableTableTableManager
                 category: category,
                 notes: notes,
                 isActive: isActive,
+                notificationId: notificationId,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
               ),

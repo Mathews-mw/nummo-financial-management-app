@@ -5,6 +5,7 @@ import 'package:nummo/app_routes.dart';
 import 'package:nummo/components/custom_outlined_button.dart';
 import 'package:nummo/data/models/budget.dart';
 import 'package:nummo/providers/budget_provider.dart';
+import 'package:nummo/providers/theme_provider.dart';
 import 'package:nummo/providers/transaction_provider.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
@@ -108,12 +109,16 @@ class _BudgetCardState extends State<BudgetCard> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return Consumer<BudgetProvider>(
       builder: (context, budgetProvider, child) {
         return Container(
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(
-            color: const Color.fromRGBO(29, 29, 29, 1),
+            color: themeProvider.themeMode == ThemeMode.dark
+                ? AppColors.gray800
+                : AppColors.gray900,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Stack(
@@ -232,7 +237,7 @@ class _BudgetCardState extends State<BudgetCard> {
                                     ).format(totalSpent),
                                     style: TextStyle(
                                       fontSize: 16,
-                                      color: AppColors.gray200,
+                                      color: AppColors.gray100,
                                     ),
                                   );
                                 },
@@ -261,12 +266,12 @@ class _BudgetCardState extends State<BudgetCard> {
                                       ).format(_budget!.total),
                                       style: TextStyle(
                                         fontSize: 16,
-                                        color: AppColors.gray200,
+                                        color: AppColors.gray100,
                                       ),
                                     )
                                   : Icon(
                                       PhosphorIcons.infinity(),
-                                      color: AppColors.gray300,
+                                      color: AppColors.gray200,
                                     ),
                             ),
                           ],

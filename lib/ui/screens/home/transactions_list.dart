@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nummo/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -74,6 +75,8 @@ class _TransactionsListState extends State<TransactionsList> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return Consumer<TransactionProvider>(
       builder: (ctx, transactionProvider, child) {
         final transactions = transactionProvider.transactions;
@@ -92,7 +95,6 @@ class _TransactionsListState extends State<TransactionsList> {
 
         return Expanded(
           child: Card(
-            color: Colors.white,
             margin: EdgeInsets.all(0),
             child: Column(
               children: [
@@ -109,7 +111,7 @@ class _TransactionsListState extends State<TransactionsList> {
                       Text(
                         'LANÇAMENTOS',
                         style: TextStyle(
-                          color: AppColors.gray500,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),
@@ -117,7 +119,9 @@ class _TransactionsListState extends State<TransactionsList> {
                       Container(
                         padding: EdgeInsets.all(6),
                         decoration: BoxDecoration(
-                          color: AppColors.gray200,
+                          color: themeProvider.themeMode == ThemeMode.dark
+                              ? AppColors.gray700
+                              : AppColors.gray200,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
@@ -131,7 +135,7 @@ class _TransactionsListState extends State<TransactionsList> {
                     ],
                   ),
                 ),
-                Divider(thickness: 0.2, color: AppColors.gray400, height: 0),
+                Divider(thickness: 0.2, height: 0),
                 if (transactions.isEmpty)
                   Padding(
                     padding: const EdgeInsets.all(20),
@@ -140,14 +144,20 @@ class _TransactionsListState extends State<TransactionsList> {
                         Icon(
                           PhosphorIcons.note(),
                           size: 38,
-                          color: AppColors.gray500,
+                          color: themeProvider.themeMode == ThemeMode.dark
+                              ? AppColors.gray400
+                              : AppColors.gray600,
                         ),
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(
                             'Você ainda não registrou despesas ou receitas neste mês.',
                             softWrap: true,
-                            style: TextStyle(color: AppColors.gray500),
+                            style: TextStyle(
+                              color: themeProvider.themeMode == ThemeMode.dark
+                                  ? AppColors.gray400
+                                  : AppColors.gray600,
+                            ),
                           ),
                         ),
                       ],

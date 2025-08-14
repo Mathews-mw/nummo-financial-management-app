@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:nummo/providers/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 Future<({int month, int year})?> showCustomMonthYearPicker(
   BuildContext context,
@@ -36,7 +38,6 @@ Future<({int month, int year})?> showCustomMonthYearPicker(
       return StatefulBuilder(
         builder: (context, setState) {
           return AlertDialog(
-            backgroundColor: Colors.white,
             title: const Text(
               'Selecione Mês e Ano',
               style: TextStyle(fontSize: 18),

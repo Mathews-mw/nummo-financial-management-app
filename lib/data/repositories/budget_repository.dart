@@ -47,8 +47,6 @@ class BudgetRepository {
   }
 
   Future<List<Budget>> findMany() async {
-    final List<Budget> tmp = [];
-
     final budgetsData = await budgetDao.findMany();
 
     return budgetsData.map((data) {

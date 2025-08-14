@@ -6,6 +6,7 @@ import 'package:currency_text_input_formatter/currency_text_input_formatter.dart
 
 import 'package:nummo/theme/app_colors.dart';
 import 'package:nummo/components/custom_button.dart';
+import 'package:nummo/providers/theme_provider.dart';
 import 'package:nummo/providers/budget_provider.dart';
 import 'package:nummo/components/custom_text_field.dart';
 import 'package:nummo/components/month_year_picker.dart';
@@ -83,8 +84,10 @@ class _CreateNewBudgetCardState extends State<CreateNewBudgetCard>
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+
     return Card(
-      color: Colors.white,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -92,7 +95,10 @@ class _CreateNewBudgetCardState extends State<CreateNewBudgetCard>
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
             child: Text(
               'NOVO ORÇAMENTO',
-              style: TextStyle(color: AppColors.gray500, fontSize: 12),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                fontSize: 12,
+              ),
             ),
           ),
           Divider(color: AppColors.gray400, thickness: 0.2, height: 0),
@@ -122,10 +128,14 @@ class _CreateNewBudgetCardState extends State<CreateNewBudgetCard>
                                   horizontal: 20,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: AppColors.gray200,
+                                  color: isDarkMode
+                                      ? AppColors.gray900
+                                      : AppColors.gray200,
                                   borderRadius: BorderRadius.circular(8),
                                   border: BoxBorder.all(
-                                    color: AppColors.gray300,
+                                    color: isDarkMode
+                                        ? AppColors.gray700
+                                        : AppColors.gray300,
                                     width: 1,
                                   ),
                                 ),
@@ -144,8 +154,12 @@ class _CreateNewBudgetCardState extends State<CreateNewBudgetCard>
                                           : '00/0000',
                                       style: TextStyle(
                                         color: _selectedDate != null
-                                            ? AppColors.gray700
-                                            : AppColors.gray400,
+                                            ? Theme.of(
+                                                context,
+                                              ).colorScheme.onSurface
+                                            : Theme.of(
+                                                context,
+                                              ).colorScheme.onSurfaceVariant,
                                       ),
                                     ),
                                   ],

@@ -1,10 +1,12 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:nummo/data/models/budget.dart';
+import 'package:nummo/providers/theme_provider.dart';
 import 'package:nummo/theme/app_colors.dart';
 import 'package:nummo/utils/capitalizer.dart';
 import 'package:nummo/utils/is_after_current_month.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:provider/provider.dart';
 
 class BudgetItemTile extends StatelessWidget {
   final Budget budget;
@@ -13,12 +15,15 @@ class BudgetItemTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+
     final bool isPast = !IsAfterCurrentMonth.compare(budget.period);
 
     return ListTile(
       title: RichText(
         text: TextSpan(
-          style: TextStyle(color: AppColors.gray700, fontSize: 16),
+          style: TextStyle(fontSize: 16),
           children: <TextSpan>[
             TextSpan(
               text: Capitalizer.capitalize(
@@ -26,14 +31,22 @@ class BudgetItemTile extends StatelessWidget {
               ),
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                color: isPast == true ? AppColors.gray400 : AppColors.gray700,
+                color: isPast == true
+                    ? isDarkMode
+                          ? AppColors.gray600
+                          : AppColors.gray400
+                    : Theme.of(context).colorScheme.onSurface,
               ),
             ),
             TextSpan(
               text: '  ${DateFormat('y').format(budget.period)}',
               style: TextStyle(
                 fontSize: 14,
-                color: isPast == true ? AppColors.gray400 : AppColors.gray500,
+                color: isPast == true
+                    ? isDarkMode
+                          ? AppColors.gray600
+                          : AppColors.gray400
+                    : Theme.of(context).colorScheme.onSurfaceVariant,
               ),
             ),
           ],
@@ -41,7 +54,11 @@ class BudgetItemTile extends StatelessWidget {
       ),
       leading: Icon(
         PhosphorIcons.calendarBlank(),
-        color: isPast == true ? AppColors.gray400 : AppColors.gray700,
+        color: isPast == true
+            ? isDarkMode
+                  ? AppColors.gray600
+                  : AppColors.gray400
+            : Theme.of(context).colorScheme.onSurface,
       ),
       trailing: Text(
         NumberFormat.simpleCurrency(
@@ -51,7 +68,11 @@ class BudgetItemTile extends StatelessWidget {
         style: TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.bold,
-          color: isPast == true ? AppColors.gray400 : AppColors.gray700,
+          color: isPast == true
+              ? isDarkMode
+                    ? AppColors.gray600
+                    : AppColors.gray400
+              : Theme.of(context).colorScheme.onSurface,
         ),
       ),
     );

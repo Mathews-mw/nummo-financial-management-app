@@ -88,7 +88,7 @@ class _LoginScreenState extends State<LoginScreen> with FormValidationsMixin {
                 padding: const EdgeInsets.all(16.0),
                 child: Image.asset(
                   'assets/images/nummo_cover.png',
-                  height: 360,
+                  height: 260,
                   width: double.infinity,
                   fit: BoxFit.cover,
                 ),

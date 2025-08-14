@@ -4,6 +4,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:nummo/theme/app_colors.dart';
+import 'package:nummo/providers/theme_provider.dart';
 import 'package:nummo/providers/budget_provider.dart';
 import 'package:nummo/ui/screens/monthly_budget/budget_item_tile.dart';
 
@@ -45,6 +46,9 @@ class _BudgetListState extends State<BudgetList> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+
     return Consumer<BudgetProvider>(
       builder: (ctx, budgetProvider, child) {
         final budgetList = budgetProvider.budgets;
@@ -63,7 +67,6 @@ class _BudgetListState extends State<BudgetList> {
 
         return Expanded(
           child: Card(
-            color: Colors.white,
             margin: EdgeInsets.all(0),
             child: Column(
               children: [
@@ -80,7 +83,7 @@ class _BudgetListState extends State<BudgetList> {
                       Text(
                         'ORÇAMENTOS CADASTRADOS',
                         style: TextStyle(
-                          color: AppColors.gray500,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),
@@ -88,7 +91,9 @@ class _BudgetListState extends State<BudgetList> {
                       Container(
                         padding: EdgeInsets.all(6),
                         decoration: BoxDecoration(
-                          color: AppColors.gray200,
+                          color: isDarkMode
+                              ? AppColors.gray700
+                              : AppColors.gray200,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(

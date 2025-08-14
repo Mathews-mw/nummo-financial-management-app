@@ -129,7 +129,7 @@ class _MonthSelectorState extends State<MonthSelector> {
                         fontSize: 13,
                         color: isSelected
                             ? AppColors.primary
-                            : AppColors.gray500,
+                            : Theme.of(context).colorScheme.onSurface,
                         fontWeight: isSelected ? FontWeight.bold : null,
                       ),
                     ),

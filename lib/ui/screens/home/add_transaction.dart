@@ -1,5 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
+import 'package:nummo/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
@@ -129,9 +130,11 @@ class _AddTransactionState extends State<AddTransaction>
   @override
   Widget build(BuildContext context) {
     final disabledButton = widget.budgetId == null;
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDarkMode = themeProvider.themeMode == ThemeMode.dark;
 
     return FloatingActionButton(
-      backgroundColor: disabledButton ? AppColors.gray400 : AppColors.gray700,
+      backgroundColor: disabledButton ? AppColors.gray400 : AppColors.gray950,
       disabledElevation: disabledButton ? 0 : 1,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(99)),
       splashColor: Colors.black.withAlpha(255),
@@ -140,21 +143,21 @@ class _AddTransactionState extends State<AddTransaction>
           ? null
           : () {
               showModalBottomSheet<void>(
-                showDragHandle: true,
-                backgroundColor: Colors.white,
-                isScrollControlled: true,
                 useSafeArea: true,
+                showDragHandle: true,
+                isScrollControlled: true,
+                // backgroundColor: Colors.white,
                 context: context,
                 builder: (BuildContext context) {
                   return StatefulBuilder(
                     builder: (context, setModalState) {
-                      return SingleChildScrollView(
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            left: 32,
-                            right: 32,
-                            bottom: 32,
-                          ),
+                      return Padding(
+                        padding: EdgeInsets.only(
+                          left: 32,
+                          right: 32,
+                          bottom: MediaQuery.of(context).viewInsets.bottom + 32,
+                        ),
+                        child: SingleChildScrollView(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
@@ -166,6 +169,7 @@ class _AddTransactionState extends State<AddTransaction>
                                     'NOVO LANÇAMENTO',
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
+                                      fontSize: 12,
                                     ),
                                   ),
                                   IconButton(
@@ -254,14 +258,18 @@ class _AddTransactionState extends State<AddTransaction>
                                               padding:
                                                   const EdgeInsets.symmetric(
                                                     vertical: 10,
-                                                    horizontal: 20,
+                                                    horizontal: 10,
                                                   ),
                                               decoration: BoxDecoration(
-                                                color: AppColors.gray200,
+                                                color: isDarkMode
+                                                    ? AppColors.gray900
+                                                    : AppColors.gray200,
                                                 borderRadius:
                                                     BorderRadius.circular(8),
                                                 border: BoxBorder.all(
-                                                  color: AppColors.gray300,
+                                                  color: isDarkMode
+                                                      ? AppColors.gray700
+                                                      : AppColors.gray300,
                                                   width: 1,
                                                 ),
                                               ),
@@ -270,7 +278,7 @@ class _AddTransactionState extends State<AddTransaction>
                                                   Icon(
                                                     PhosphorIcons.calendarDots(),
                                                   ),
-                                                  const SizedBox(width: 10),
+                                                  const SizedBox(width: 5),
                                                   Text(
                                                     _selectedDate != null
                                                         ? DateFormat(
@@ -281,10 +289,15 @@ class _AddTransactionState extends State<AddTransaction>
                                                           )
                                                         : '00/00/0000',
                                                     style: TextStyle(
+                                                      fontSize: 12,
                                                       color:
                                                           _selectedDate != null
-                                                          ? AppColors.gray700
-                                                          : AppColors.gray400,
+                                                          ? Theme.of(context)
+                                                                .colorScheme
+                                                                .onSurface
+                                                          : Theme.of(context)
+                                                                .colorScheme
+                                                                .onSurfaceVariant,
                                                     ),
                                                   ),
                                                 ],
@@ -316,6 +329,8 @@ class _AddTransactionState extends State<AddTransaction>
                                                     _moneyFlow ==
                                                         TransactionType.income
                                                     ? Colors.green.shade50
+                                                    : isDarkMode
+                                                    ? AppColors.gray900
                                                     : AppColors.gray200,
                                                 borderRadius:
                                                     BorderRadius.circular(8),
@@ -324,6 +339,8 @@ class _AddTransactionState extends State<AddTransaction>
                                                       _moneyFlow ==
                                                           TransactionType.income
                                                       ? Colors.green
+                                                      : isDarkMode
+                                                      ? AppColors.gray700
                                                       : AppColors.gray300,
                                                   width: 1,
                                                 ),
@@ -371,6 +388,8 @@ class _AddTransactionState extends State<AddTransaction>
                                                     _moneyFlow ==
                                                         TransactionType.outcome
                                                     ? Colors.red.shade50
+                                                    : isDarkMode
+                                                    ? AppColors.gray900
                                                     : AppColors.gray200,
                                                 borderRadius:
                                                     BorderRadius.circular(8),
@@ -380,6 +399,8 @@ class _AddTransactionState extends State<AddTransaction>
                                                           TransactionType
                                                               .outcome
                                                       ? Colors.redAccent
+                                                      : isDarkMode
+                                                      ? AppColors.gray700
                                                       : AppColors.gray300,
                                                   width: 1,
                                                 ),

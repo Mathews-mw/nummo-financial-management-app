@@ -43,8 +43,6 @@ class UserRepository {
   }
 
   Future<List<User>> getUsers() async {
-    final List<User> tmp = [];
-
     final usersData = await userDao.getUsers();
 
     return usersData.map((data) {

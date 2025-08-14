@@ -1,9 +1,11 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import 'package:nummo/theme/app_colors.dart';
 import 'package:nummo/data/models/transaction.dart';
+import 'package:nummo/providers/theme_provider.dart';
 import 'package:nummo/@types/transaction_type.dart';
 
 class TransactionItemTile extends StatelessWidget {
@@ -13,6 +15,9 @@ class TransactionItemTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       child: Row(
@@ -25,11 +30,11 @@ class TransactionItemTile extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.all(6),
                   decoration: BoxDecoration(
-                    color: AppColors.gray200,
+                    color: isDarkMode ? AppColors.gray700 : AppColors.gray200,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(
-                    PhosphorIcons.basket(),
+                    PhosphorIcons.note(),
                     size: 20,
                     color: AppColors.primary,
                   ),
