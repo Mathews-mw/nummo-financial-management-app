@@ -3,6 +3,15 @@
 
 **Nummo** is a mobile application developed with **Flutter** to help users manage their personal finances in a practical, visual, and organized way. With Nummo, you can record income and expenses, plan monthly budgets, track bills, and receive **automatic reminders** via local notifications. The app also works in **offline-first** mode, so you can use it without an internet connection.
 
+<div align="center">
+    <img src="assets/screenshots/login.png" alt="login_screen" height="320" />
+    <img src="assets/screenshots/home_dark.png" alt="home_screen" height="320" />
+    <img src="assets/screenshots/drawer.png" alt="drawer" height="320" />
+    <img src="assets/screenshots/add_transaction.png" alt="add_transaction" height="320" />
+    <img src="assets/screenshots/budgets.png" alt="budgets_screen" height="320" />
+    <img src="assets/screenshots/add_reminder_dark.png" alt="add_reminder" height="320" />
+</div>
+
 ----------
 
 ## 📱 **Overview**
