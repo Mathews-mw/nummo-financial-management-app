@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nummo/providers/theme_provider.dart';
 import 'package:nummo/providers/user_provider.dart';
 
 import 'package:nummo/app_routes.dart';
@@ -25,7 +26,9 @@ class _OpeningScreenState extends State<OpeningScreen> {
   Future<void> _initApp() async {
     try {
       final userProvider = Provider.of<UserProvider>(context, listen: false);
+      final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
 
+      await themeProvider.loadTheme();
       await userProvider.initializerUser();
 
       setState(() => _isAuthenticated = userProvider.isAuthenticated);
@@ -54,9 +57,14 @@ class _OpeningScreenState extends State<OpeningScreen> {
     final screenHeight =
         mediaQuery.size.height - mediaQuery.viewPadding.vertical;
 
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+
     return Scaffold(
       extendBody: true,
-      backgroundColor: AppColors.background,
+      backgroundColor: isDarkMode
+          ? AppColors.darkBackground
+          : AppColors.background,
       body: ConstrainedBox(
         constraints: BoxConstraints(minHeight: screenHeight),
         child: Padding(
@@ -85,13 +93,15 @@ class _OpeningScreenState extends State<OpeningScreen> {
                         fontSize: 18,
                         letterSpacing: 0,
                         fontStyle: FontStyle.italic,
-                        color: AppColors.gray700,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ],
                 ),
               ),
-              LinearProgressIndicator(),
+              LinearProgressIndicator(
+                backgroundColor: isDarkMode ? Colors.white12 : Colors.black12,
+              ),
             ],
           ),
         ),

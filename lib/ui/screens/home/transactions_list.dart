@@ -76,6 +76,7 @@ class _TransactionsListState extends State<TransactionsList> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDarkMode = themeProvider.themeMode == ThemeMode.dark;
 
     return Consumer<TransactionProvider>(
       builder: (ctx, transactionProvider, child) {
@@ -135,7 +136,11 @@ class _TransactionsListState extends State<TransactionsList> {
                     ],
                   ),
                 ),
-                Divider(thickness: 0.2, height: 0),
+                Divider(
+                  thickness: 0.2,
+                  color: isDarkMode ? AppColors.gray600 : AppColors.gray400,
+                  height: 0,
+                ),
                 if (transactions.isEmpty)
                   Padding(
                     padding: const EdgeInsets.all(20),
@@ -144,7 +149,7 @@ class _TransactionsListState extends State<TransactionsList> {
                         Icon(
                           PhosphorIcons.note(),
                           size: 38,
-                          color: themeProvider.themeMode == ThemeMode.dark
+                          color: isDarkMode
                               ? AppColors.gray400
                               : AppColors.gray600,
                         ),
@@ -154,7 +159,7 @@ class _TransactionsListState extends State<TransactionsList> {
                             'Você ainda não registrou despesas ou receitas neste mês.',
                             softWrap: true,
                             style: TextStyle(
-                              color: themeProvider.themeMode == ThemeMode.dark
+                              color: isDarkMode
                                   ? AppColors.gray400
                                   : AppColors.gray600,
                             ),
@@ -167,7 +172,7 @@ class _TransactionsListState extends State<TransactionsList> {
                   child: ListView.separated(
                     separatorBuilder: (_, _) => Divider(
                       thickness: 0.2,
-                      color: AppColors.gray400,
+                      color: isDarkMode ? AppColors.gray600 : AppColors.gray400,
                       height: 0,
                     ),
                     itemCount: transactions.length,
@@ -195,7 +200,6 @@ class _TransactionsListState extends State<TransactionsList> {
                                 showDialog<bool>(
                                   context: context,
                                   builder: (ctx) => AlertDialog(
-                                    backgroundColor: Colors.white,
                                     title: const Text('Remover transação'),
                                     content: Column(
                                       mainAxisSize: MainAxisSize.min,
@@ -209,10 +213,12 @@ class _TransactionsListState extends State<TransactionsList> {
                                       TextButton(
                                         onPressed: () =>
                                             Navigator.pop(ctx, false),
-                                        child: const Text(
+                                        child: Text(
                                           'Fechar',
                                           style: TextStyle(
-                                            color: AppColors.gray700,
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.onSurface,
                                           ),
                                         ),
                                       ),

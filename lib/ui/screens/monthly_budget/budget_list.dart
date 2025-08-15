@@ -107,7 +107,11 @@ class _BudgetListState extends State<BudgetList> {
                     ],
                   ),
                 ),
-                Divider(thickness: 0.2, color: AppColors.gray400, height: 1),
+                Divider(
+                  thickness: 0.2,
+                  color: isDarkMode ? AppColors.gray600 : AppColors.gray400,
+                  height: 1,
+                ),
                 if (budgetList.isEmpty)
                   Padding(
                     padding: const EdgeInsets.all(20),
@@ -133,7 +137,7 @@ class _BudgetListState extends State<BudgetList> {
                   child: ListView.separated(
                     separatorBuilder: (_, _) => Divider(
                       thickness: 0.2,
-                      color: AppColors.gray400,
+                      color: isDarkMode ? AppColors.gray600 : AppColors.gray400,
                       height: 0,
                     ),
                     itemCount: budgetList.length,
@@ -161,13 +165,12 @@ class _BudgetListState extends State<BudgetList> {
                                 showDialog<bool>(
                                   context: context,
                                   builder: (ctx) => AlertDialog(
-                                    backgroundColor: Colors.white,
-                                    title: const Text('Remover transação'),
+                                    title: const Text('Remover orçamento'),
                                     content: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         const Text(
-                                          'Você tem certeza que deseja remover a transação?',
+                                          'Você tem certeza que deseja remover o orçamento?',
                                         ),
                                       ],
                                     ),
@@ -175,10 +178,12 @@ class _BudgetListState extends State<BudgetList> {
                                       TextButton(
                                         onPressed: () =>
                                             Navigator.pop(ctx, false),
-                                        child: const Text(
+                                        child: Text(
                                           'Fechar',
                                           style: TextStyle(
-                                            color: AppColors.gray700,
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.onSurface,
                                           ),
                                         ),
                                       ),

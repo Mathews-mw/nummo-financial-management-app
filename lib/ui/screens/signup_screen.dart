@@ -89,7 +89,6 @@ class _SignupScreenState extends State<SignupScreen> with FormValidationsMixin {
 
     return Scaffold(
       extendBody: true,
-      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           physics: BouncingScrollPhysics(),
@@ -115,7 +114,7 @@ class _SignupScreenState extends State<SignupScreen> with FormValidationsMixin {
                       RichText(
                         text: TextSpan(
                           style: TextStyle(
-                            color: AppColors.gray700,
+                            color: Theme.of(context).colorScheme.onSurface,
                             fontSize: 16,
                           ),
                           children: <TextSpan>[

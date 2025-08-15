@@ -37,14 +37,31 @@ class _BillsManagementState extends State<BillsManagement> {
     setState(() => _isLoading = true);
 
     try {
-      final transactionProvider = Provider.of<BillReminderProvider>(
+      final billReminderProvider = Provider.of<BillReminderProvider>(
         context,
         listen: false,
       );
 
-      await transactionProvider.loadBillsReminders();
+      await billReminderProvider.loadBillsReminders();
     } catch (e) {
       print('Error loading reminders: $e');
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> deleteBillReminder(int reminderId) async {
+    setState(() => _isLoading = true);
+
+    try {
+      final billReminderProvider = Provider.of<BillReminderProvider>(
+        context,
+        listen: false,
+      );
+
+      await billReminderProvider.deleteBillReminder(reminderId);
+    } catch (e) {
+      print('Error delete reminder: $e');
     } finally {
       setState(() => _isLoading = false);
     }
@@ -73,7 +90,6 @@ class _BillsManagementState extends State<BillsManagement> {
                 itemCount: reminders.length,
                 itemBuilder: (ctx, index) {
                   return Card(
-                    color: Colors.white,
                     child: ListTile(
                       title: Text(
                         reminders[index].title,
@@ -86,24 +102,67 @@ class _BillsManagementState extends State<BillsManagement> {
                       ),
                       leading: Icon(Icons.request_quote, size: 32),
                       trailing: MenuAnchor(
-                        style: MenuStyle(
-                          backgroundColor: WidgetStateProperty.all(
-                            Colors.white,
-                          ),
-                        ),
                         menuChildren: <Widget>[
                           MenuItemButton(
                             onPressed: () {},
-                            child: const Text(
+                            child: Text(
                               'Editar',
-                              style: TextStyle(color: AppColors.gray700),
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ),
                             ),
                           ),
                           MenuItemButton(
-                            onPressed: () {},
-                            child: const Text(
+                            onPressed: () {
+                              showDialog<bool>(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  title: const Text('Excluir lembrete'),
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Text(
+                                        'Você tem certeza que deseja excluir o lembrete de pagamento de conta?',
+                                      ),
+                                    ],
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(ctx, false),
+                                      child: Text(
+                                        'Fechar',
+                                        style: TextStyle(
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.onSurface,
+                                        ),
+                                      ),
+                                    ),
+                                    TextButton(
+                                      onPressed: () async {
+                                        await deleteBillReminder(
+                                          reminders[index].id,
+                                        );
+
+                                        Navigator.pop(ctx, true);
+                                      },
+                                      child: const Text(
+                                        'Remover',
+                                        style: TextStyle(
+                                          color: AppColors.danger,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                            child: Text(
                               'Excluir',
-                              style: TextStyle(color: AppColors.gray700),
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ),
                             ),
                           ),
                         ],

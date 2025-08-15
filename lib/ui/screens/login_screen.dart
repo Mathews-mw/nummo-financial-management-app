@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:nummo/@exceptions/invalid_credentials_exception.dart';
 
 import 'package:nummo/app_routes.dart';
+import 'package:nummo/theme/app_colors.dart';
 import 'package:nummo/providers/user_provider.dart';
 import 'package:nummo/components/custom_button.dart';
+import 'package:nummo/providers/theme_provider.dart';
 import 'package:nummo/components/custom_text_field.dart';
 import 'package:nummo/@mixins/form_validations_mixin.dart';
 import 'package:nummo/components/password_text_field.dart';
+import 'package:nummo/@exceptions/invalid_credentials_exception.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -28,14 +30,11 @@ class _LoginScreenState extends State<LoginScreen> with FormValidationsMixin {
     final bool isValidForm = formKey.currentState?.validate() ?? false;
 
     if (!isValidForm) {
-      print('Invalid form!');
       setState(() => _isLoading = false);
       return;
     }
 
     formKey.currentState?.save();
-
-    print('form data: $formData');
 
     try {
       final userProvider = Provider.of<UserProvider>(context, listen: false);
@@ -53,7 +52,15 @@ class _LoginScreenState extends State<LoginScreen> with FormValidationsMixin {
     } on InvalidCredentialsException catch (e) {
       return _invalidCredentialsError();
     } catch (e) {
-      print('Erro inesperado ao tentar fazer o login: $e');
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Ops... Ocorreu um erro inesperado ao tentar fazer login.',
+            ),
+          ),
+        );
+      }
     } finally {
       setState(() => _isLoading = false);
     }
@@ -77,9 +84,11 @@ class _LoginScreenState extends State<LoginScreen> with FormValidationsMixin {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+
     return Scaffold(
       extendBody: true,
-      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -135,7 +144,6 @@ class _LoginScreenState extends State<LoginScreen> with FormValidationsMixin {
                           formData['password'] = value ?? '';
                         },
                         onFieldSubmitted: (value) async {
-                          print('value: $value');
                           await _handleLogin();
                         },
                       ),
@@ -159,7 +167,13 @@ class _LoginScreenState extends State<LoginScreen> with FormValidationsMixin {
                           style: TextStyle(fontSize: 15),
                         ),
                       ),
-                      Divider(),
+                      Divider(
+                        height: 0,
+                        thickness: 1,
+                        color: isDarkMode
+                            ? AppColors.gray600
+                            : AppColors.gray400,
+                      ),
                       const SizedBox(height: 10),
                       const Text('Ainda não tem uma conta?'),
                       TextButton(

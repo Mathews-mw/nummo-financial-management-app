@@ -49,8 +49,8 @@ class BillReminderProvider with ChangeNotifier {
               newReminder.dueDate!.year,
               newReminder.dueDate!.month,
               newReminder.dueDate!.day,
-              14,
-              6,
+              9,
+              0,
             )
           : DateTime(
               newReminder.createdAt.year,
@@ -68,9 +68,10 @@ class BillReminderProvider with ChangeNotifier {
   }
 
   Future<void> deleteBillReminder(int reminderId) async {
+    await _notificationService.cancelNotification(reminderId);
+
     await _repository.deleteBillReminder(reminderId);
 
-    await _notificationService.cancelNotification(reminderId);
     _billsReminders.removeWhere((reminder) => reminder.id == reminderId);
 
     notifyListeners();

@@ -1,6 +1,7 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:nummo/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
@@ -147,6 +148,9 @@ class _AddBillsState extends State<AddBills> with FormValidationsMixin {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDarkMode = themeProvider.themeMode == ThemeMode.dark;
+
     return IconButton(
       icon: Icon(Icons.add),
       onPressed: () {
@@ -154,7 +158,6 @@ class _AddBillsState extends State<AddBills> with FormValidationsMixin {
           useSafeArea: true,
           showDragHandle: true,
           isScrollControlled: true,
-          backgroundColor: Colors.white,
           context: context,
           builder: (ctx) {
             return StatefulBuilder(
@@ -282,17 +285,18 @@ class _AddBillsState extends State<AddBills> with FormValidationsMixin {
                                         );
                                       },
                                       child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 10,
-                                          horizontal: 20,
-                                        ),
+                                        padding: const EdgeInsets.all(10),
                                         decoration: BoxDecoration(
-                                          color: AppColors.gray200,
+                                          color: isDarkMode
+                                              ? AppColors.gray900
+                                              : AppColors.gray200,
                                           borderRadius: BorderRadius.circular(
                                             8,
                                           ),
                                           border: BoxBorder.all(
-                                            color: AppColors.gray300,
+                                            color: isDarkMode
+                                                ? AppColors.gray700
+                                                : AppColors.gray300,
                                             width: 1,
                                           ),
                                         ),
@@ -309,8 +313,12 @@ class _AddBillsState extends State<AddBills> with FormValidationsMixin {
                                                   : '00/00/0000',
                                               style: TextStyle(
                                                 color: _selectedDate != null
-                                                    ? AppColors.gray700
-                                                    : AppColors.gray400,
+                                                    ? Theme.of(
+                                                        context,
+                                                      ).colorScheme.onSurface
+                                                    : Theme.of(context)
+                                                          .colorScheme
+                                                          .onSurfaceVariant,
                                               ),
                                             ),
                                           ],

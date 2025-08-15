@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+
 import 'package:nummo/theme/app_colors.dart';
+import 'package:nummo/providers/theme_provider.dart';
 
 class PasswordTextField extends StatefulWidget {
   final TextEditingController? controller;
@@ -43,8 +46,8 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDarkMode = themeProvider.themeMode == ThemeMode.dark;
 
     return TextFormField(
       enabled: widget.enabled,
@@ -58,13 +61,15 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
       obscuringCharacter: '*',
       inputFormatters: widget.inputFormatters,
       cursorColor: AppColors.primary,
-      style: TextStyle(color: AppColors.gray700),
+      style: TextStyle(
+        color: isDarkMode ? AppColors.gray200 : AppColors.gray800,
+      ),
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.only(top: 10, left: 20),
         filled: true,
-        fillColor: AppColors.gray200,
+        fillColor: isDarkMode ? AppColors.gray900 : AppColors.gray200,
         hintText: widget.hintText,
-        hintStyle: TextStyle(fontSize: 14, color: AppColors.gray400),
+        hintStyle: TextStyle(fontSize: 14, color: AppColors.gray500),
         errorStyle: TextStyle(fontSize: 12, color: Colors.redAccent),
         suffixIcon: IconButton(
           icon: Icon(
@@ -79,11 +84,17 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: AppColors.gray300, width: 1),
+          borderSide: BorderSide(
+            color: isDarkMode ? AppColors.gray700 : AppColors.gray300,
+            width: 1,
+          ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: AppColors.gray300, width: 1),
+          borderSide: BorderSide(
+            color: isDarkMode ? AppColors.gray700 : AppColors.gray300,
+            width: 1,
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),

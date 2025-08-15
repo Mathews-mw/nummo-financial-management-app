@@ -77,7 +77,7 @@ class CustomTextField extends StatelessWidget {
         filled: true,
         fillColor: isDarkMode ? AppColors.gray900 : AppColors.gray200,
         hintText: hintText,
-        hintStyle: TextStyle(fontSize: 14, color: AppColors.gray400),
+        hintStyle: TextStyle(fontSize: 14, color: AppColors.gray500),
         errorStyle: TextStyle(fontSize: 12, color: AppColors.danger),
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,

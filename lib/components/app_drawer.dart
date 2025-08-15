@@ -121,8 +121,8 @@ class AppDrawer extends StatelessWidget {
                 Switch(
                   thumbIcon: thumbIcon,
                   value: themeProvider.themeMode == ThemeMode.dark,
-                  onChanged: (value) {
-                    themeProvider.toggleTheme(value);
+                  onChanged: (value) async {
+                    await themeProvider.toggleTheme(value);
                   },
                 ),
                 const SizedBox(width: 8),
